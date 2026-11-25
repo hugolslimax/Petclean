@@ -2,7 +2,10 @@
 // CONFIGURAÇÃO DA API
 // Endereço base do servidor Flask
 // ==============================
-const API = "http://localhost:5000";
+const API = "";
+const moeda = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const nomes = { banho: "Banho", tosa: "Tosa", hidratacao: "Hidratação", medio: "Médio" };
+let banhosParaGratis = 10;
 
 
 // ==============================
@@ -11,23 +14,25 @@ const API = "http://localhost:5000";
 // ==============================
 async function carregarPrecos() {
   const resposta = await fetch(`${API}/precos`);
+  if (!resposta.ok) throw new Error("Falha ao consultar preços.");
   const dados = await resposta.json();
 
   const precos = dados.precos;
+  banhosParaGratis = dados.banhos_para_gratis;
   const container = document.getElementById("tabela-precos");
 
   // Monta uma tabela para cada serviço disponível
   let html = "";
-  for (const servico in precos) {
+  for (const servico of ["banho", "tosa", "hidratacao"]) {
     html += `<table>
       <tr>
         <th colspan="2">${capitalizar(servico)}</th>
       </tr>`;
 
-    for (const porte in precos[servico]) {
+    for (const porte of ["pequeno", "medio", "grande"]) {
       html += `<tr>
         <td>${capitalizar(porte)}</td>
-        <td>R$ ${precos[servico][porte].toFixed(2)}</td>
+        <td>${moeda.format(precos[servico][porte])}</td>
       </tr>`;
     }
 
@@ -73,8 +78,6 @@ async function cadastrarPet() {
     document.getElementById("nome").value  = "";
     document.getElementById("tutor").value = "";
 
-    // Atualiza a lista de pets na tela
-    carregarPets();
   } else {
     msg.style.color = "#c0392b";
     msg.textContent = `❌ ${dados.erro}`;
@@ -88,7 +91,8 @@ async function cadastrarPet() {
 // ==============================
 async function carregarPets() {
   const resposta = await fetch(`${API}/pets`);
-  const pets     = await resposta.json();
+  if (!resposta.ok) throw new Error("Falha ao consultar pets.");
+  const pets = await resposta.json();
   const container = document.getElementById("lista-pets-conteudo");
 
   if (pets.length === 0) {
@@ -98,15 +102,18 @@ async function carregarPets() {
 
   let html = "";
   for (const pet of pets) {
-    const faltam = 10 - pet.banhos_pagos;
+    const faltam = Math.max(0, banhosParaGratis - pet.banhos_pagos);
+    const fidelidade = faltam === 0 ? "Próximo banho grátis" :
+      faltam === 1 ? "Falta 1 banho para ganhar um grátis" :
+      `Faltam ${faltam} banhos para ganhar um grátis`;
 
     html += `
       <div class="pet-card">
         <div>
-          <strong>${pet.nome}</strong><br>
-          <span>${capitalizar(pet.especie)} · ${capitalizar(pet.porte)} · Tutor: ${pet.tutor}</span>
+          <strong>${escaparHtml(pet.nome)}</strong><br>
+          <span>${capitalizar(pet.especie)} · ${capitalizar(pet.porte)} · Tutor: ${escaparHtml(pet.tutor)}</span>
         </div>
-        <span class="badge-fidelidade">🐾 ${faltam} banho(s) p/ grátis</span>
+        <span class="badge-fidelidade">🐾 ${fidelidade}</span>
       </div>`;
   }
 
@@ -153,7 +160,7 @@ async function simularAtendimento() {
 
   if (resposta.ok) {
     // Monta o resumo da simulação
-    let resumo = `<strong>Pet:</strong> ${dados.pet}<br>`;
+    let resumo = `<strong>Pet:</strong> ${escaparHtml(dados.pet)}<br>`;
     resumo += `<strong>Serviços:</strong> ${dados.servicos.map(capitalizar).join(", ")}<br>`;
 
     if (dados.banho_gratis) {
@@ -161,10 +168,10 @@ async function simularAtendimento() {
     }
 
     if (dados.desconto_combo > 0) {
-      resumo += `🏷️ Desconto combo: -R$ ${dados.desconto_combo.toFixed(2)}<br>`;
+      resumo += `🏷️ Desconto combo: -${moeda.format(dados.desconto_combo)}<br>`;
     }
 
-    resumo += `<strong>Total: R$ ${dados.total.toFixed(2)}</strong>`;
+    resumo += `<strong>Total: ${moeda.format(dados.total)}</strong>`;
 
     box.innerHTML    = resumo;
     box.style.display = "block";
@@ -200,7 +207,7 @@ async function confirmarAtendimento() {
 
   if (resposta.ok) {
     msg.style.color = "#2d7a2d";
-    msg.textContent = `✅ Atendimento registrado! Total: R$ ${dados.total.toFixed(2)}`;
+    msg.textContent = `✅ Atendimento registrado! Total: ${moeda.format(dados.total)}`;
 
     // Limpa o formulário de atendimento
     document.getElementById("pet-atend").value = "";
@@ -211,8 +218,6 @@ async function confirmarAtendimento() {
     box.style.display      = "none";
     btnConf.style.display  = "none";
 
-    // Atualiza a lista de pets (atualiza o contador de banhos)
-    carregarPets();
   } else {
     msg.style.color = "#c0392b";
     msg.textContent = `❌ ${dados.erro}`;
@@ -226,7 +231,11 @@ async function confirmarAtendimento() {
 // ==============================
 async function carregarHistorico() {
   const resposta = await fetch(`${API}/historico`);
-  const dados    = await resposta.json();
+  if (!resposta.ok) {
+    mostrarErro("historico-conteudo", "Não foi possível carregar o histórico.");
+    return;
+  }
+  const dados = await resposta.json();
   const container = document.getElementById("historico-conteudo");
 
   if (dados.atendimentos.length === 0) {
@@ -238,7 +247,7 @@ async function carregarHistorico() {
   for (const item of dados.atendimentos) {
     html += `
       <div class="historico-card">
-        <strong>${item.pet}</strong> (tutor: ${item.tutor})<br>
+        <strong>${escaparHtml(item.pet)}</strong> (tutor: ${escaparHtml(item.tutor)})<br>
         Serviços: ${item.servicos.map(capitalizar).join(", ")}<br>`;
 
     if (item.banho_gratis) {
@@ -246,15 +255,15 @@ async function carregarHistorico() {
     }
 
     if (item.desconto_combo > 0) {
-      html += `Desconto combo: -R$ ${item.desconto_combo.toFixed(2)}<br>`;
+      html += `Desconto combo: -${moeda.format(item.desconto_combo)}<br>`;
     }
 
-    html += `Total: <strong>R$ ${item.total.toFixed(2)}</strong>
+    html += `Total: <strong>${moeda.format(item.total)}</strong>
       </div>`;
   }
 
   // Exibe faturamento total
-  html += `<p class="faturamento-total">💰 Faturamento total: R$ ${dados.faturamento_total.toFixed(2)}</p>`;
+  html += `<p class="faturamento-total">💰 Faturamento total: ${moeda.format(dados.faturamento_total)}</p>`;
 
   container.innerHTML = html;
 }
@@ -277,8 +286,14 @@ function getServicosSelecionados() {
 // FUNÇÃO AUXILIAR: CAPITALIZAR
 // Deixa a primeira letra maiúscula
 // ==============================
+function escaparHtml(texto) {
+  const elemento = document.createElement("span");
+  elemento.textContent = texto;
+  return elemento.innerHTML;
+}
+
 function capitalizar(texto) {
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
+  return nomes[texto] ?? (texto.charAt(0).toUpperCase() + texto.slice(1));
 }
 
 
@@ -286,5 +301,42 @@ function capitalizar(texto) {
 // INICIALIZAÇÃO
 // Carrega os dados ao abrir a página
 // ==============================
-carregarPrecos();
-carregarPets();
+const paginas = [...document.querySelectorAll("main > .pagina")];
+const links = document.querySelectorAll("nav a");
+
+function mostrarErro(id, mensagem) {
+  const aviso = document.createElement("p");
+  aviso.className = "vazio";
+  aviso.textContent = mensagem;
+  document.getElementById(id).replaceChildren(aviso);
+}
+
+function abrirPagina() {
+  const id = location.hash.slice(1);
+  const pagina = paginas.find(secao => secao.id === id) ?? paginas[0];
+
+  for (const secao of paginas) {
+    secao.hidden = secao !== pagina;
+  }
+  for (const link of links) {
+    if (link.hash === `#${pagina.id}`) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  }
+
+  if (pagina.id === "precos") {
+    carregarPrecos().catch(() => mostrarErro("tabela-precos", "Não foi possível carregar os preços."));
+  } else if (pagina.id === "lista-pets") {
+    carregarPets().catch(() => mostrarErro("lista-pets-conteudo", "Não foi possível carregar os pets."));
+  } else if (pagina.id === "historico") {
+    carregarHistorico().catch(() => mostrarErro("historico-conteudo", "Não foi possível carregar o histórico."));
+  }
+}
+
+window.addEventListener("hashchange", () => {
+  abrirPagina();
+  window.scrollTo(0, 0);
+});
+abrirPagina();

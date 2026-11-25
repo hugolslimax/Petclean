@@ -1,408 +1,126 @@
-/* ==============================
-   CONFIGURAÇÕES GERAIS
-============================== */
-
-/* Define fonte e cores base para toda a página */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  color-scheme: light;
+  --fundo: #f9f7f2;
+  --papel: #fffdfa;
+  --texto: #173c3a;
+  --suave: #526463;
+  --verde: #17675e;
+  --escuro: #104e46;
+  --menta: #e2f1e9;
+  --pessego: #f8d6c3;
+  --linha: #dce6e0;
 }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f5f9f5;
-  color: #1a1a1a;
-  line-height: 1.6;
-}
-
-
-/* ==============================
-   CABEÇALHO
-============================== */
-
-header {
-  background-color: #2d7a2d;
-  color: white;
-  padding: 16px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* Logo com texto e ícone */
-.logo {
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-/* Links de navegação */
-nav a {
-  color: white;
-  text-decoration: none;
-  margin-left: 24px;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-
-/* ==============================
-   SEÇÃO HERO (topo da página)
-============================== */
-
-.hero {
-  background-color: #3a9e3a;
-  color: white;
-  text-align: center;
-  padding: 72px 24px;
-}
-
-.hero h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.hero p {
-  font-size: 1.1rem;
-  margin-bottom: 28px;
-  opacity: 0.9;
-}
-
-/* Botão principal do hero */
-.btn-hero {
-  display: inline-block;
-  background-color: white;
-  color: #2d7a2d;
-  padding: 12px 28px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-.btn-hero:hover {
-  background-color: #e8f5e8;
-}
-
-
-/* ==============================
-   SEÇÕES GERAIS (cadastro, preços etc.)
-============================== */
-
-.secao {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 56px 24px;
-}
-
-.secao h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2d7a2d;
-  margin-bottom: 8px;
-}
-
-/* Texto menor abaixo do título */
-.subtitulo {
-  color: #555;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
-}
-
-/* Separador visual entre seções */
-.secao + .secao {
-  border-top: 1px solid #dde8dd;
-}
-
-
-/* ==============================
-   TABELA DE PREÇOS
-============================== */
-
-/* Tabela gerada pelo JavaScript */
-#tabela-precos table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 16px;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-}
-
-#tabela-precos th {
-  background-color: #2d7a2d;
-  color: white;
-  padding: 10px 16px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-#tabela-precos td {
-  padding: 10px 16px;
-  border-bottom: 1px solid #eee;
-  font-size: 0.95rem;
-}
-
-#tabela-precos tr:last-child td {
-  border-bottom: none;
-}
-
-/* Aviso de combo e fidelidade */
-.info-combo {
-  font-size: 0.95rem;
-  color: #444;
-  margin-top: 8px;
-}
-
-
-/* ==============================
-   FORMULÁRIOS
-============================== */
-
-.formulario {
-  background: white;
-  border-radius: 10px;
-  padding: 28px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+  margin: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 16px/1.5 "Nunito Sans", system-ui, sans-serif;
 }
 
-/* Rótulos dos campos */
-.formulario label {
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: #333;
-}
+a { color: inherit; }
+:focus-visible { outline: 3px solid #ab512b; outline-offset: 4px; }
 
-/* Campos de texto e selects */
-.formulario input,
-.formulario select {
-  padding: 10px 12px;
-  border: 1px solid #c8dcc8;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-family: 'Inter', sans-serif;
-  background-color: #fafafa;
-  outline: none;
-}
+.cabecalho { background: var(--papel); border-bottom: 1px solid var(--linha); }
+.barra, main { width: min(calc(100% - 48px), 1160px); margin-inline: auto; }
+.barra { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.logo { display: inline-flex; align-items: center; gap: 9px; font-size: 1.5rem; font-weight: 900; text-decoration: none; }
+.logo span { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--menta); font-size: 1.15rem; }
+nav { display: flex; flex-wrap: wrap; gap: 4px; }
+nav a { padding: 9px 12px; border-radius: 10px; text-decoration: none; font-size: .94rem; font-weight: 800; }
+nav a:hover, nav a[aria-current="page"] { background: var(--menta); color: var(--escuro); }
 
-.formulario input:focus,
-.formulario select:focus {
-  border-color: #2d7a2d;
-  background-color: white;
-}
+main { flex: 1; padding-block: 40px 56px; }
+.hero { display: grid; grid-template-columns: 1.45fr 1fr; min-height: 400px; border-radius: 32px; overflow: hidden; background: var(--menta); }
+.hero-texto { padding: clamp(28px, 5vw, 70px); padding-right: 15px; align-self: center; }
+.categoria { font-weight: 900; color: var(--escuro); }
+h1, h2 { margin: 0; line-height: 1.08; letter-spacing: -.035em; font-weight: 900; }
+h1 { font-size: clamp(2.35rem, 5vw, 4.1rem); }
+h2 { font-size: clamp(1.85rem, 4vw, 2.7rem); }
+.hero-texto > p { max-width: 42ch; }
+.hero-texto > p:not(.categoria), .subtitulo, small { color: var(--suave); }
+.acoes, .titulo-acoes { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.acoes { margin-top: 25px; }
+.titulo-acoes { justify-content: space-between; }
 
-/* Grupo de checkboxes lado a lado */
-.checkboxes {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.checkboxes label {
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.botao, button {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 11px 17px;
+  background: var(--verde);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
   cursor: pointer;
 }
+.botao:hover, button:hover { background: var(--escuro); }
+.botao-secundario, .btn-secundario { color: var(--escuro); background: var(--papel); border-color: var(--linha); }
+.botao-secundario:hover, .btn-secundario:hover { background: #f6e9db; }
 
-/* Botões primários dos formulários */
-.formulario button {
-  background-color: #2d7a2d;
-  color: white;
-  border: none;
-  padding: 11px;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  margin-top: 4px;
+.hero-arte { display: grid; place-items: center; position: relative; min-height: 220px; isolation: isolate; }
+.hero-arte::before { content: ""; position: absolute; width: min(72%, 300px); aspect-ratio: 1; border-radius: 48% 52% 58% 42%; background: var(--pessego); transform: rotate(-15deg); z-index: -1; }
+.arte-cao { font-size: clamp(5rem, 10vw, 9rem); transform: translate(-22%, -4%) rotate(-10deg); }
+.arte-gato { position: absolute; font-size: clamp(3.1rem, 6vw, 5.6rem); transform: translate(57%, 44%) rotate(12deg); }
+.arte-pata { position: absolute; top: 15%; right: 22%; font-size: 2rem; transform: rotate(20deg); }
+
+.atalhos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
+.atalhos a { display: flex; align-items: center; gap: 12px; padding: 17px; text-decoration: none; }
+.atalhos a:hover { border-color: var(--verde); }
+.atalhos a > :last-child { margin-inline-start: auto; color: var(--verde); }
+.atalhos small { display: block; margin-top: 2px; }
+.icone { display: grid; place-items: center; flex: 0 0 41px; height: 41px; border-radius: 13px; background: var(--pessego); }
+.atalhos a:nth-child(2) .icone { background: var(--menta); }
+.atalhos a:nth-child(3) .icone { background: #eee7f5; }
+
+.secao > h2, .titulo-acoes { margin-bottom: 18px; }
+.subtitulo { margin-top: -5px; }
+.atalhos a, .formulario, .pet-card, .historico-card, .vazio, table {
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  border-radius: 16px;
 }
+#tabela-precos, #lista-pets-conteudo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+#tabela-precos > .vazio, #lista-pets-conteudo > .vazio { grid-column: 1 / -1; }
+table { width: 100%; border-spacing: 0; overflow: hidden; }
+th, td { padding: 12px 16px; text-align: left; }
+th { background: var(--menta); }
+td { border-top: 1px solid var(--linha); }
+td:last-child { text-align: right; font-weight: 800; white-space: nowrap; }
+.pet-card, .historico-card, .vazio { padding: 16px 20px; overflow-wrap: anywhere; }
+.pet-card strong { font-size: 1.13rem; }
+.badge-fidelidade { display: inline-block; margin-top: 10px; padding: 5px 9px; border-radius: 8px; background: var(--menta); color: var(--escuro); font-size: .87rem; font-weight: 800; }
+.vazio { color: var(--suave); margin: 0; }
+#historico-conteudo { display: grid; gap: 12px; margin-top: 16px; }
+.faturamento-total { font-weight: 900; }
 
-.formulario button:hover {
-  background-color: #245e24;
+.formulario { max-width: 600px; padding: clamp(18px, 4vw, 32px); }
+.formulario > label, legend { display: block; margin-bottom: 5px; font-weight: 800; }
+.formulario input[type="text"], .formulario select { width: 100%; padding: 10px 12px; margin-bottom: 16px; border: 1px solid #a7bcb4; border-radius: 9px; background: white; color: var(--texto); font: inherit; }
+.checkboxes { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0 0 18px; padding: 0; border: 0; }
+input[type="checkbox"] { accent-color: var(--verde); }
+.mensagem:empty { display: none; }
+.simulacao-box { margin-block: 16px; padding: 14px; border-radius: 12px; background: var(--menta); }
+footer { padding: 18px 24px; text-align: center; color: var(--suave); border-top: 1px solid var(--linha); }
+footer p { margin: 0; }
+
+@media (max-width: 900px) {
+  .barra { align-items: flex-start; flex-direction: column; padding-block: 14px 10px; }
+  .atalhos, #tabela-precos, #lista-pets-conteudo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-
-/* ==============================
-   CAIXA DE SIMULAÇÃO
-============================== */
-
-/* Exibe o resultado da simulação de preço */
-.simulacao-box {
-  background-color: #eaf5ea;
-  border: 1px solid #b4d9b4;
-  border-radius: 8px;
-  padding: 16px;
-  font-size: 0.95rem;
-  color: #1a1a1a;
-  line-height: 1.8;
-}
-
-
-/* ==============================
-   MENSAGENS DE RETORNO
-============================== */
-
-.mensagem {
-  font-size: 0.9rem;
-  min-height: 20px;
-  color: #2d7a2d;
-}
-
-
-/* ==============================
-   CARDS DE PET CADASTRADO
-============================== */
-
-/* Card de cada pet na lista */
-.pet-card {
-  background: white;
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.pet-card strong {
-  font-size: 1rem;
-  color: #2d7a2d;
-}
-
-.pet-card span {
-  font-size: 0.88rem;
-  color: #555;
-}
-
-/* Badge de fidelidade */
-.badge-fidelidade {
-  background-color: #e8f5e8;
-  color: #2d7a2d;
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-
-/* ==============================
-   CARDS DO HISTÓRICO
-============================== */
-
-/* Card de cada atendimento no histórico */
-.historico-card {
-  background: white;
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-}
-
-.historico-card strong {
-  color: #2d7a2d;
-}
-
-/* Linha do total do faturamento */
-.faturamento-total {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #2d7a2d;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 2px solid #dde8dd;
-}
-
-
-/* ==============================
-   BOTÃO SECUNDÁRIO
-============================== */
-
-/* Botão menor usado em seções sem formulário */
-.btn-secundario {
-  background-color: #2d7a2d;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  margin-bottom: 20px;
-}
-
-.btn-secundario:hover {
-  background-color: #245e24;
-}
-
-
-/* ==============================
-   ESTADO VAZIO
-============================== */
-
-/* Texto exibido quando não há dados ainda */
-.vazio {
-  color: #888;
-  font-size: 0.95rem;
-  padding: 16px 0;
-}
-
-
-/* ==============================
-   RODAPÉ
-============================== */
-
-footer {
-  background-color: #2d7a2d;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  font-size: 0.9rem;
-  margin-top: 40px;
-}
-
-
-/* ==============================
-   RESPONSIVIDADE (telas menores)
-============================== */
-
-@media (max-width: 600px) {
-  header {
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px 20px;
-  }
-
-  nav a {
-    margin-left: 12px;
-  }
-
-  .hero h1 {
-    font-size: 1.8rem;
-  }
-
-  .pet-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
+@media (max-width: 580px) {
+  .barra, main { width: calc(100% - 30px); }
+  main { padding-block: 22px 36px; }
+  nav a { font-size: .88rem; padding: 7px 9px; }
+  .hero, .atalhos, #tabela-precos, #lista-pets-conteudo { grid-template-columns: 1fr; }
+  .hero { border-radius: 23px; }
+  .hero-texto { padding: 26px 23px 8px; }
+  .hero-arte::before { width: 180px; }
 }

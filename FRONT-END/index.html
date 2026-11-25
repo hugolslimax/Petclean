@@ -5,164 +5,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PetClean – Banho & Tosa</title>
 
-  <!-- Fonte do Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <!-- Arquivo de estilos externo -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ==============================
-       CABEÇALHO / HEADER
-  ============================== -->
-  <header>
-    <div class="logo">🐾 PetClean</div>
-    <nav>
-      <a href="#cadastro">Cadastrar Pet</a>
-      <a href="#atendimento">Atendimento</a>
-      <a href="#historico">Histórico</a>
-    </nav>
+  <header class="cabecalho">
+    <div class="barra">
+      <a class="logo" href="#inicio"><span aria-hidden="true">🐾</span> PetClean</a>
+      <nav aria-label="Navegação principal">
+        <a href="#inicio">Início</a>
+        <a href="#precos">Preços</a>
+        <a href="#lista-pets">Pets cadastrados</a>
+        <a href="#cadastro">Cadastrar pet</a>
+        <a href="#atendimento">Atendimento</a>
+        <a href="#historico">Histórico</a>
+      </nav>
+    </div>
   </header>
 
-
-  <!-- ==============================
-       SEÇÃO HERO (apresentação)
-  ============================== -->
-  <section class="hero">
-    <h1>Banho & Tosa</h1>
-    <p>Cadastre seu pet, agende os serviços e acompanhe o programa de fidelidade.</p>
-    <a href="#cadastro" class="btn-hero">Começar agora</a>
-  </section>
-
-
-  <!-- ==============================
-       TABELA DE PREÇOS
-  ============================== -->
-  <section class="secao" id="precos">
-    <h2>Tabela de preços</h2>
-    <p class="subtitulo">Preços por porte do pet</p>
-
-    <!-- A tabela é preenchida automaticamente pelo JavaScript -->
-    <div id="tabela-precos"></div>
-  </section>
-
-
-  <!-- ==============================
-       FORMULÁRIO: CADASTRO DE PET
-  ============================== -->
-  <section class="secao" id="cadastro">
-    <h2>Cadastrar pet</h2>
-
-    <div class="formulario">
-
-      <!-- Campo: nome do pet -->
-      <label for="nome">Nome do pet</label>
-      <input type="text" id="nome" placeholder="Ex: Rex" />
-
-      <!-- Campo: nome do tutor -->
-      <label for="tutor">Nome do tutor</label>
-      <input type="text" id="tutor" placeholder="Ex: Ana" />
-
-      <!-- Campo: espécie -->
-      <label for="especie">Espécie</label>
-      <select id="especie">
-        <option value="cachorro">Cachorro</option>
-        <option value="gato">Gato</option>
-      </select>
-
-      <!-- Campo: porte -->
-      <label for="porte">Porte</label>
-      <select id="porte">
-        <option value="pequeno">Pequeno</option>
-        <option value="medio">Médio</option>
-        <option value="grande">Grande</option>
-      </select>
-
-      <!-- Botão de cadastro -->
-      <button onclick="cadastrarPet()">Cadastrar</button>
-
-      <!-- Mensagem de retorno do cadastro -->
-      <p id="msg-cadastro" class="mensagem"></p>
-    </div>
-  </section>
-
-
-  <!-- ==============================
-       LISTA DE PETS CADASTRADOS
-  ============================== -->
-  <section class="secao" id="lista-pets">
-    <h2>Pets cadastrados</h2>
-
-    <!-- Lista preenchida pelo JavaScript -->
-    <div id="lista-pets-conteudo">
-      <p class="vazio">Nenhum pet cadastrado ainda.</p>
-    </div>
-  </section>
-
-
-  <!-- ==============================
-       FORMULÁRIO: REGISTRAR ATENDIMENTO
-  ============================== -->
-  <section class="secao" id="atendimento">
-    <h2>Registrar atendimento</h2>
-
-    <div class="formulario">
-
-      <!-- Campo: nome do pet para atendimento -->
-      <label for="pet-atend">Nome do pet</label>
-      <input type="text" id="pet-atend" placeholder="Ex: Rex" />
-
-      <!-- Checkboxes de serviços -->
-      <label>Serviços</label>
-      <div class="checkboxes">
-        <label><input type="checkbox" id="serv-banho" value="banho" /> Banho</label>
-        <label><input type="checkbox" id="serv-tosa" value="tosa" /> Tosa</label>
-        <label><input type="checkbox" id="serv-hidratacao" value="hidratacao" /> Hidratação</label>
+  <main>
+    <section class="pagina" id="inicio" aria-labelledby="titulo-inicio">
+      <div class="hero">
+        <div class="hero-texto">
+          <p class="categoria">Banho, tosa e hidratação</p>
+          <h1 id="titulo-inicio">Cuidado para quem faz parte da família.</h1>
+          <p>Cadastre seu pet, simule o valor dos serviços e acompanhe os banhos que faltam para ganhar um grátis.</p>
+          <div class="acoes">
+            <a href="#cadastro" class="botao">Cadastrar meu pet</a>
+            <a href="#precos" class="botao botao-secundario">Ver preços</a>
+          </div>
+        </div>
+        <div class="hero-arte" aria-hidden="true">
+          <span class="arte-pata">🐾</span>
+          <span class="arte-cao">🐶</span>
+          <span class="arte-gato">🐱</span>
+        </div>
       </div>
 
-      <!-- Botão para simular (ver o valor sem registrar) -->
-      <button onclick="simularAtendimento()">Simular valor</button>
+      <div class="atalhos">
+        <a href="#lista-pets"><span class="icone" aria-hidden="true">🐾</span><span><strong>Pets cadastrados</strong><small>Veja os animais e a fidelidade de cada um.</small></span><span aria-hidden="true">→</span></a>
+        <a href="#atendimento"><span class="icone" aria-hidden="true">🫧</span><span><strong>Novo atendimento</strong><small>Escolha os serviços e simule o valor.</small></span><span aria-hidden="true">→</span></a>
+        <a href="#historico"><span class="icone" aria-hidden="true">📋</span><span><strong>Histórico</strong><small>Consulte atendimentos e valores registrados.</small></span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
 
-      <!-- Resultado da simulação -->
-      <div id="resultado-simulacao" class="simulacao-box" style="display:none;"></div>
+    <section class="pagina secao" hidden id="precos">
+      <h2>Tabela de preços</h2>
+      <p class="subtitulo">Consulte os valores por serviço e porte do pet.</p>
 
-      <!-- Botão para confirmar e registrar -->
-      <button id="btn-confirmar" onclick="confirmarAtendimento()" style="display:none; background:#2d7a2d;">
-        Confirmar atendimento
-      </button>
-
-      <!-- Mensagem de retorno do atendimento -->
-      <p id="msg-atendimento" class="mensagem"></p>
-    </div>
-  </section>
+      <div id="tabela-precos" aria-live="polite"></div>
+    </section>
 
 
-  <!-- ==============================
-       HISTÓRICO DE ATENDIMENTOS
-  ============================== -->
-  <section class="secao" id="historico">
-    <h2>Histórico</h2>
+    <section class="pagina secao" hidden id="cadastro">
+      <h2>Cadastrar pet</h2>
 
-    <!-- Botão para recarregar o histórico -->
-    <button onclick="carregarHistorico()" class="btn-secundario">Atualizar histórico</button>
+      <div class="formulario">
 
-    <!-- Conteúdo do histórico preenchido pelo JavaScript -->
-    <div id="historico-conteudo">
-      <p class="vazio">Clique em "Atualizar histórico" para ver os atendimentos.</p>
-    </div>
-  </section>
+        <label for="nome">Nome do pet</label>
+        <input type="text" id="nome" placeholder="Ex: Rex" />
+
+        <label for="tutor">Nome do tutor</label>
+        <input type="text" id="tutor" placeholder="Ex: Ana" />
+
+        <label for="especie">Espécie</label>
+        <select id="especie">
+          <option value="cachorro">Cachorro</option>
+          <option value="gato">Gato</option>
+        </select>
+
+        <label for="porte">Porte</label>
+        <select id="porte">
+          <option value="pequeno">Pequeno</option>
+          <option value="medio">Médio</option>
+          <option value="grande">Grande</option>
+        </select>
+
+        <button onclick="cadastrarPet()">Cadastrar</button>
+
+        <p id="msg-cadastro" class="mensagem" role="status"></p>
+      </div>
+    </section>
 
 
-  <!-- ==============================
-       RODAPÉ
-  ============================== -->
+    <section class="pagina secao" hidden id="lista-pets">
+      <div class="titulo-acoes"><h2>Pets cadastrados</h2><a class="botao" href="#cadastro">Cadastrar pet</a></div>
+
+      <div id="lista-pets-conteudo" aria-live="polite">
+        <p class="vazio">Carregando pets…</p>
+      </div>
+    </section>
+
+
+    <section class="pagina secao" hidden id="atendimento">
+      <h2>Registrar atendimento</h2>
+
+      <div class="formulario">
+
+        <label for="pet-atend">Nome do pet</label>
+        <input type="text" id="pet-atend" placeholder="Ex: Rex" />
+
+        <fieldset class="checkboxes">
+          <legend>Serviços</legend>
+          <label><input type="checkbox" id="serv-banho" value="banho" /> Banho</label>
+          <label><input type="checkbox" id="serv-tosa" value="tosa" /> Tosa</label>
+          <label><input type="checkbox" id="serv-hidratacao" value="hidratacao" /> Hidratação</label>
+        </fieldset>
+
+        <button onclick="simularAtendimento()">Simular valor</button>
+
+        <div id="resultado-simulacao" class="simulacao-box" style="display:none;"></div>
+
+        <button id="btn-confirmar" onclick="confirmarAtendimento()" style="display:none;">
+          Confirmar atendimento
+        </button>
+
+        <p id="msg-atendimento" class="mensagem" role="status"></p>
+      </div>
+    </section>
+
+
+    <section class="pagina secao" hidden id="historico">
+      <h2>Histórico</h2>
+
+      <button onclick="carregarHistorico()" class="btn-secundario">Atualizar histórico</button>
+
+      <div id="historico-conteudo" aria-live="polite">
+        <p class="vazio">Carregando atendimentos…</p>
+      </div>
+    </section>
+  </main>
   <footer>
-    <p>🐾 PetClean – Todos os direitos reservados</p>
+    <p>PetClean · Banho & Tosa</p>
   </footer>
 
 
-  <!-- Arquivo JavaScript externo -->
   <script src="script.js"></script>
 
 </body>
