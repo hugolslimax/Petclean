@@ -5,7 +5,7 @@ Projeto simples com Back-end, Front-end e Banco de dados.
 https://petclean.pythonanywhere.com
 ## Tecnologias
 - **Front-end** — HTML, CSS e JavaScript.
-- **Back-end** — Python.
+- **Back-end** — Python e Flask.
 - **Banco de dados** — SQLite.
 - **Hospedagem** — PythonAnywhere.
 ## Requisitos
