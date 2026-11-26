@@ -14,3 +14,4 @@ Python 3.10 ou superior com SQLite 3.35 ou superior.
 - Camilla de Cássia Figueiredo - 01093764
 - Hugo Leonardo Santos de Lima - 01935952
 - Mariele Kawany da Silva Barboza - 01935022
+- Rafael Lustosa Oliveira - 01345020
