@@ -1,11 +1,13 @@
 CREATE TABLE IF NOT EXISTS pets (
     id INTEGER PRIMARY KEY,
     nome TEXT NOT NULL,
-    nome_normalizado TEXT NOT NULL UNIQUE,
+    nome_normalizado TEXT NOT NULL,
+    tutor_normalizado TEXT NOT NULL,
     especie TEXT NOT NULL CHECK (especie IN ('cachorro', 'gato')),
     porte TEXT NOT NULL CHECK (porte IN ('pequeno', 'medio', 'grande')),
     tutor TEXT NOT NULL,
-    banhos_pagos INTEGER NOT NULL CHECK (banhos_pagos >= 0)
+    banhos_pagos INTEGER NOT NULL CHECK (banhos_pagos >= 0),
+    UNIQUE (nome_normalizado, tutor_normalizado)
 );
 
 CREATE TABLE IF NOT EXISTS atendimentos (

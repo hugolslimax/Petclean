@@ -125,8 +125,31 @@ async function carregarPets() {
 // FUNÇÃO: SIMULAR ATENDIMENTO
 // Calcula o valor sem registrar e exibe o resultado
 // ==============================
+async function carregarPetsAtendimento() {
+  const seletor = document.getElementById("pet-atend");
+  const anterior = seletor.value;
+  seletor.disabled = true;
+  seletor.replaceChildren(new Option("Carregando pets…", ""));
+
+  try {
+    const resposta = await fetch(`${API}/pets`);
+    if (!resposta.ok) throw new Error("Falha ao consultar pets.");
+    const pets = await resposta.json();
+    seletor.replaceChildren(new Option(pets.length ? "Selecione um pet" : "Nenhum pet cadastrado", ""));
+    for (const pet of pets) {
+      seletor.add(new Option(`${pet.nome} · Tutor: ${pet.tutor}`, String(pet.id)));
+    }
+    if ([...seletor.options].some(opcao => opcao.value === anterior)) {
+      seletor.value = anterior;
+    }
+    seletor.disabled = pets.length === 0;
+  } catch {
+    seletor.replaceChildren(new Option("Não foi possível carregar os pets", ""));
+  }
+}
+
 async function simularAtendimento() {
-  const pet      = document.getElementById("pet-atend").value.trim();
+  const petId    = Number(document.getElementById("pet-atend").value);
   const servicos = getServicosSelecionados();
   const msg      = document.getElementById("msg-atendimento");
   const box      = document.getElementById("resultado-simulacao");
@@ -137,9 +160,9 @@ async function simularAtendimento() {
   box.style.display     = "none";
   msg.textContent        = "";
 
-  if (!pet) {
+  if (!petId) {
     msg.style.color = "#c0392b";
-    msg.textContent = "Informe o nome do pet.";
+    msg.textContent = "Selecione um pet.";
     return;
   }
 
@@ -153,7 +176,7 @@ async function simularAtendimento() {
   const resposta = await fetch(`${API}/atendimentos/simular`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ pet, servicos })
+    body: JSON.stringify({ pet_id: petId, servicos })
   });
 
   const dados = await resposta.json();
@@ -190,17 +213,19 @@ async function simularAtendimento() {
 // Registra o atendimento na API (atualiza fidelidade)
 // ==============================
 async function confirmarAtendimento() {
-  const pet      = document.getElementById("pet-atend").value.trim();
+  const petId    = Number(document.getElementById("pet-atend").value);
   const servicos = getServicosSelecionados();
   const msg      = document.getElementById("msg-atendimento");
   const btnConf  = document.getElementById("btn-confirmar");
   const box      = document.getElementById("resultado-simulacao");
 
+  if (!petId || !servicos.length) return;
+
   // Envia o registro definitivo para a API
   const resposta = await fetch(`${API}/atendimentos`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ pet, servicos })
+    body: JSON.stringify({ pet_id: petId, servicos })
   });
 
   const dados = await resposta.json();
@@ -330,6 +355,8 @@ function abrirPagina() {
     carregarPrecos().catch(() => mostrarErro("tabela-precos", "Não foi possível carregar os preços."));
   } else if (pagina.id === "lista-pets") {
     carregarPets().catch(() => mostrarErro("lista-pets-conteudo", "Não foi possível carregar os pets."));
+  } else if (pagina.id === "atendimento") {
+    carregarPetsAtendimento();
   } else if (pagina.id === "historico") {
     carregarHistorico().catch(() => mostrarErro("historico-conteudo", "Não foi possível carregar o histórico."));
   }
@@ -340,3 +367,10 @@ window.addEventListener("hashchange", () => {
   window.scrollTo(0, 0);
 });
 abrirPagina();
+
+document.querySelectorAll("#atendimento select, #atendimento input").forEach(campo => {
+  campo.addEventListener("change", () => {
+    document.getElementById("resultado-simulacao").style.display = "none";
+    document.getElementById("btn-confirmar").style.display = "none";
+  });
+});

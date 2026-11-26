@@ -15,8 +15,38 @@ ROOT = Path(__file__).resolve().parent
 FRONTEND = ROOT / "FRONT-END"
 
 
+def preparar_banco(banco):
+    schema = (ROOT / "schema.sql").read_text(encoding="utf-8")
+    criar_pets, criar_atendimentos = schema.strip().rstrip(";").split(";", 1)
+
+    with closing(sqlite3.connect(banco)) as conexao, conexao:
+        # A tabela de atendimentos continua referenciando o nome final "pets".
+        conexao.execute("PRAGMA foreign_keys = OFF")
+        conexao.execute("BEGIN IMMEDIATE")
+        colunas = {row[1] for row in conexao.execute("PRAGMA table_info(pets)")}
+        if colunas and "tutor_normalizado" not in colunas:
+            conexao.execute(criar_pets.replace("IF NOT EXISTS pets", "pets_nova", 1))
+            conexao.create_function("normalizar", 1, str.lower)
+            conexao.execute("""
+                INSERT INTO pets_nova
+                    (id, nome, nome_normalizado, tutor_normalizado, especie,
+                     porte, tutor, banhos_pagos)
+                SELECT id, nome, nome_normalizado, normalizar(tutor), especie,
+                       porte, tutor, banhos_pagos
+                FROM pets
+            """)
+            conexao.execute("DROP TABLE pets")
+            conexao.execute("ALTER TABLE pets_nova RENAME TO pets")
+        else:
+            conexao.execute(criar_pets)
+
+        conexao.execute(criar_atendimentos)
+        if conexao.execute("PRAGMA foreign_key_check").fetchone():
+            raise sqlite3.IntegrityError("Há atendimentos sem um pet correspondente.")
+
+
 def criar_app(banco):
-    spec = importlib.util.spec_from_file_location("petclean_api", FRONTEND / "api (1).py")
+    spec = importlib.util.spec_from_file_location("petclean_api", ROOT / "api.py")
     api = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(api)
 
@@ -29,8 +59,7 @@ def criar_app(banco):
         conexao.execute("PRAGMA foreign_keys = ON")
         return conexao
 
-    with closing(conectar()) as conexao:
-        conexao.executescript((ROOT / "schema.sql").read_text(encoding="utf-8"))
+    preparar_banco(banco)
 
     def persistir(view, *, grava=False, carrega_historico=False):
         @wraps(view)
@@ -40,13 +69,15 @@ def criar_app(banco):
                 conexao.execute("BEGIN IMMEDIATE" if grava else "BEGIN")
                 api.pets = [
                     dict(row) for row in conexao.execute(
-                        "SELECT nome, especie, porte, tutor, banhos_pagos FROM pets ORDER BY id"
+                        "SELECT id, nome, especie, porte, tutor, banhos_pagos FROM pets ORDER BY id"
                     )
                 ]
+                api.proximo_id = api.pets[-1]["id"] + 1 if api.pets else 1
                 api.historico = []
                 if carrega_historico:
                     api.historico = [
                         {
+                            "pet_id": row["pet_id"],
                             "pet": row["nome"],
                             "tutor": row["tutor"],
                             "servicos": json.loads(row["servicos"]),
@@ -68,16 +99,23 @@ def criar_app(banco):
                             pet = api.pets[-1]
                             conexao.execute("""
                                 INSERT INTO pets
-                                    (nome, nome_normalizado, especie, porte, tutor, banhos_pagos)
-                                VALUES (:nome, :nome_normalizado, :especie, :porte, :tutor, :banhos_pagos)
-                            """, {**pet, "nome_normalizado": pet["nome"].lower()})
+                                    (id, nome, nome_normalizado, tutor_normalizado, especie,
+                                     porte, tutor, banhos_pagos)
+                                VALUES (:id, :nome, :nome_normalizado, :tutor_normalizado,
+                                        :especie, :porte, :tutor, :banhos_pagos)
+                            """, {
+                                **pet,
+                                "nome_normalizado": pet["nome"].lower(),
+                                "tutor_normalizado": pet["tutor"].lower(),
+                            })
                         else:
                             atendimento = api.historico[-1]
-                            pet = api.buscar_pet(atendimento["pet"])
-                            pet_id = conexao.execute("""
-                                UPDATE pets SET banhos_pagos = ?
-                                WHERE nome_normalizado = ? RETURNING id
-                            """, (pet["banhos_pagos"], pet["nome"].lower())).fetchone()["id"]
+                            pet_id = atendimento["pet_id"]
+                            pet = api.buscar_pet_por_id(pet_id)
+                            conexao.execute(
+                                "UPDATE pets SET banhos_pagos = ? WHERE id = ?",
+                                (pet["banhos_pagos"], pet_id),
+                            )
                             conexao.execute("""
                                 INSERT INTO atendimentos
                                     (pet_id, tutor, servicos, desconto_centavos,
